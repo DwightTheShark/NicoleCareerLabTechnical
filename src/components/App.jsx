@@ -3,17 +3,14 @@ import './App.css';
 import { searchArtworks } from '../utils/api';
 import { SearchForm } from './SearchForm';
 import { Footer } from './Footer';
+import { useState, useEffect } from 'react';
 
 export function App() {
+	const [data, setData] = useState([]);
+
 	function onSearchSubmit(query) {
-		// Search for the users's query.
-		// TODO: render the results, instead of logging them to the console.
-		// NOTE: `searchArtworks` currently returns local data, so that we
-		// don't make too many requests to the API! Once we've built out
-		// our UI, we need to make real requests!
-		// @see: ./src/uitls/api.js
 		searchArtworks(query).then((json) => {
-			console.log(json);
+			setData(json.data); // update state with the artwork data
 		});
 	}
 
@@ -21,6 +18,20 @@ export function App() {
 		<div className="App">
 			<h1>TCL Career Lab Art Finder</h1>
 			<SearchForm onSearchSubmit={onSearchSubmit} />
+			<ul>
+				{data.map(
+					({ artist_title, date_display, id, image_id, thumbnail, title }) => (
+						<>
+							<h2>{title}</h2>
+							<p>{artist_title}</p>
+							<img
+								alt={thumbnail.alt_text}
+								src={`https://www.artic.edu/iiif/2/${image_id}/full/843,/0/default.jpg`}
+							/>
+						</>
+					)
+				)}
+			</ul>
 			<Footer />
 		</div>
 	);
